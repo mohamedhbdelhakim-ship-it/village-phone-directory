@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>دليل المدرسين والأساتذة - قرية</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      min-height: 92vh;
+      max-width: 420px;
+      margin: auto;
+      color: #333;
+    }
+
+    .top-back-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      background: #ffffff;
+      color: #007BFF;
+      padding: 8px 15px;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      width: fit-content;
+      transition: 0.2s;
+    }
+
+    .top-back-btn:active {
+      transform: scale(0.95);
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(45deg, #007BFF, #00d2ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+
+    .person-card {
+      background: #fff;
+      padding: 15px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      width: 100%;
+      box-sizing: border-box;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .person-name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .person-job {
+      color: #7f8c8d;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .person-phone {
+      color: #007BFF;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .action-btns {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .call-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #007BFF, #0056b3);
+      color: white;
+      padding: 9px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+      transition: 0.2s;
+    }
+
+    .call-btn:active {
+      transform: scale(0.97);
+    }
+
+    .wa-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #25d366, #1ebe5d);
+      color: white;
+      padding: 9px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
+      transition: 0.2s;
+    }
+
+    .wa-btn:active {
+      transform: scale(0.97);
+    }
+
+    .no-data {
+      color: #e74c3c;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 30px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <a href="home.html" class="top-back-btn">⬅ العودة للرئيسية</a>
+  <h2>📚 المدرسين والأساتذة المسجلين</h2>
+  <div id="list">
+    <p style="text-align: center; color: #7f8c8d; margin-top: 20px;">جاري تحميل المدرسين من السحابة... ⏳</p>
+  </div>
+
+<script type="module">
+  import { db, collection, getDocs } from "./firebase.js";
+
+  async function loadTeachersFromCloud() {
+    const container = document.getElementById("list");
+
+    try {
+      const querySnapshot = await getDocs(collection(db, "contacts"));
+      let allPeople = [];
+
+      querySnapshot.forEach((doc) => {
+        allPeople.push(doc.data());
+      });
+
+      const filtered = allPeople.filter(p => {
+        let job = p.job ? p.job.toLowerCase() : "";
+        return job.includes("مدرس") || job.includes("استاذ") || job.includes("أستاذ") || job.includes("معلم");
+      });
+
+      container.innerHTML = "";
+
+      if (filtered.length === 0) {
+        container.innerHTML = "<p class='no-data'>لا يوجد مدرسين مسجلين حتى الآن ⚠️</p>";
+      } else {
+        filtered.forEach(p => {
+          let displayName = p.name + (p.nickname ? ` (${p.nickname})` : "");
+          let cleanPhone = p.phone.startsWith('0') ? '2' + p.phone : p.phone;
+
+          container.innerHTML += `
+            <div class="person-card">
+              <div class="person-name">${displayName}</div>
+              <div class="person-job">المهنة: ${p.job}</div>
+              <div class="person-phone">الرقم: ${p.phone}</div>
+              <div class="action-btns">
+                <a href="tel:${p.phone}" class="call-btn">📞 اتصال</a>
+                <a href="https://wa.me/${cleanPhone}" target="_blank" class="wa-btn">💬 واتساب</a>
+              </div>
+            </div>
+          `;
+        });
+      }
+    } catch (error) {
+      console.error("خطأ في جلب بيانات المدرسين:", error);
+      container.innerHTML = "<p class='no-data'>حدث خطأ أثناء الاتصال بالسحابة ❌</p>";
+    }
+  }
+
+  loadTeachersFromCloud();
+</script>
+
+</body>
+</html>

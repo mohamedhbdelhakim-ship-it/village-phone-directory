@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>لوحة تحكم المطور - دليل القرية</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      min-height: 92vh;
+      max-width: 480px;
+      margin: auto;
+      color: #333;
+    }
+
+    .top-back-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      background: #ffffff;
+      color: #007BFF;
+      padding: 8px 15px;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      width: fit-content;
+      transition: 0.2s;
+    }
+
+    .top-back-btn:active {
+      transform: scale(0.95);
+    }
+
+    h2, h3 {
+      font-weight: 800;
+      background: linear-gradient(45deg, #007BFF, #00d2ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-top: 5px;
+      margin-bottom: 15px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      box-sizing: border-box;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"], input[type="password"], select {
+      width: 100%;
+      padding: 11px 14px;
+      box-sizing: border-box;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      font-size: 14px;
+      background: #fafbfc;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus, select:focus {
+      border-color: #007BFF;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.12);
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, #007BFF, #0056b3);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.25);
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .danger-btn {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.25);
+    }
+
+    .warning-btn {
+      background: linear-gradient(135deg, #f39c12, #d68910);
+      box-shadow: 0 4px 15px rgba(243, 156, 18, 0.25);
+    }
+
+    .success-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.25);
+    }
+
+    .person-item {
+      background: #f8f9fa;
+      padding: 12px;
+      margin-top: 12px;
+      border: 1px solid #edf2f7;
+      border-radius: 12px;
+      font-size: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .person-item input[type="checkbox"] {
+      margin-top: 4px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .stats-box {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #444;
+      text-align: center;
+    }
+
+    .batch-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="top-back-btn">⬅ العودة للرئيسية</a>
+
+  <!-- شاشة تسجيل الدخول -->
+  <div id="loginSection" class="card">
+    <h2>🔒 دخول المطور</h2>
+    <p style="font-size: 14px; color: #666;">برجاء إدخال كلمة المرور للوصول إلى لوحة التحكم:</p>
+    <input type="password" id="passwordInput" placeholder="كلمة المرور">
+    <button type="button" onclick="checkPassword()">دخول</button>
+    <p id="loginError" style="color: #e74c3c; margin-top: 10px; font-weight: bold; display: none;"></p>
+  </div>
+
+  <!-- لوحة التحكم -->
+  <div id="adminPanel" style="display: none;">
+    <h2>⚙️ لوحة تحكم المطور <span style="font-size: 11px; color: #28a745;">(جاهز للإدارة 🚀)</span></h2>
+
+    <!-- نموذج تعديل بيانات شخص -->
+    <div id="editCard" class="card" style="border: 2px solid #007BFF; background-color: #f1f8ff; display: none;">
+      <h3>✏️ تعديل بيانات الشخص</h3>
+      <input type="hidden" id="editIndex">
+      <label>الاسم:</label>
+      <input type="text" id="editName">
+      <label>الكنية / الشهرة:</label>
+      <input type="text" id="editNick">
+      <label>المهنة:</label>
+      <input type="text" id="editJob">
+      <label>رقم الهاتف:</label>
+      <input type="text" id="editPhone">
+      
+      <button type="button" class="success-btn" onclick="saveEditedPerson()">حفظ التعديلات</button>
+      <button type="button" class="danger-btn" onclick="cancelEdit()">إلغاء</button>
+    </div>
+
+    <!-- قسم إضافة شخص جديد -->
+    <div class="card" style="border: 2px solid #28a745; background-color: #f4fdf4;">
+      <h3>➕ إضافة شخص أو رقم جديد</h3>
+      <label>الاسم:</label>
+      <input type="text" id="newName" placeholder="ادخل اسم الشخص أو صاحب المهنة">
+      
+      <label>الكنية / الشهرة: <span style="font-size: 11px; color: #666;">(اختياري)</span></label>
+      <input type="text" id="newNick" placeholder="مثال: أبو محمد، الشناوي...">
+      
+      <label>المهنة أو الصفة:</label>
+      <input type="text" id="newJob" placeholder="مثال: سباك، طبيب، مواطن...">
+      
+      <label>رقم الهاتف:</label>
+      <input type="text" id="newPhone" placeholder="010xxxxxxxx أو ألصق الرقم المنسوخ">
+      
+      <button type="button" class="success-btn" onclick="addNewPersonFromAdmin()">إضافة وحفظ الرقم</button>
+      <p id="addMsg" style="margin-top: 8px; font-weight: bold; text-align: center;"></p>
+    </div>
+
+    <!-- إحصائيات الدليل (مختصرة لعدد المسجلين فقط) -->
+    <div class="card stats-box">
+      <h3>📊 إحصائيات الدليل</h3>
+      <p style="font-size: 18px; margin-top: 10px;"><strong>إجمالي الأرقام المسجلة:</strong> <span id="totalCount" style="color: #007BFF; font-weight: bold;">0</span></p>
+    </div>
+
+    <!-- إدارة البيانات والنسخ الاحتياطي ورفع ملف جهات الاتصال -->
+    <div class="card">
+      <h3>💾 إدارة البيانات والنسخ الاحتياطي</h3>
+      <button type="button" onclick="exportData()">📥 تصدير البيانات (Backup)</button>
+      
+      <label style="margin-top: 15px; font-weight: bold;">📱 استيراد ملف جهات الاتصال (VCF أو JSON):</label>
+      <input type="file" id="contactFile" accept=".vcf, .json" onchange="importContacts(event)">
+
+      <button type="button" class="danger-btn" style="margin-top: 20px;" onclick="resetFactory()">🔄 إعادة ضبط المصنع</button>
+    </div>
+
+    <!-- البحث والتحكم في الأسماء وتحديد متعدد -->
+    <div class="card">
+      <h3>👥 إدارة الأفراد والأرقام</h3>
+      <input type="text" id="adminSearch" placeholder="ابحث بالاسم أو الرقم أو المهنة للتحكم..." oninput="renderAdminList()">
+      
+      <div class="batch-actions">
+        <button type="button" class="warning-btn" style="margin-top: 10px; font-size: 13px; padding: 8px;" onclick="toggleSelectAll()">☑️ تحديد الكل</button>
+        <button type="button" class="danger-btn" style="margin-top: 10px; font-size: 13px; padding: 8px;" onclick="deleteSelected()">🗑️ حذف المحدد</button>
+      </div>
+
+      <div id="adminListContainer" style="max-height: 400px; overflow-y: auto; margin-top: 10px;"></div>
+    </div>
+  </div>
+
+<script type="module">
+  import { db, collection, getDocs, addDoc } from "./firebase.js";
+
+  const correctPassword = "010hamo";
+  const defaultPeople = [
+    { name: "محمد أحمد", nickname: "أبو أحمد", phone: "01000000001", job: "مطور البرنامج" },
+    { name: "عبدالله منصور", nickname: "", phone: "01064227711", job: "طالب في كلية الطب" }
+  ];
+
+  function getLocalPeople() {
+    let stored = localStorage.getItem("villagePeople");
+    if (stored) {
+      return JSON.parse(stored);
+    } else {
+      localStorage.setItem("villagePeople", JSON.stringify(defaultPeople));
+      return defaultPeople;
+    }
+  }
+
+  window.checkPassword = async function() {
+    const pass = document.getElementById("passwordInput").value;
+    if (pass === correctPassword) {
+      document.getElementById("loginSection").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "contacts"));
+        if (!querySnapshot.empty) {
+          let cloudList = [];
+          querySnapshot.forEach((doc) => {
+            cloudList.push(doc.data());
+          });
+          localStorage.setItem("villagePeople", JSON.stringify(cloudList));
+        }
+      } catch (e) {}
+      
+      loadAdminData();
+    } else {
+      const err = document.getElementById("loginError");
+      err.style.display = "block";
+      err.innerText = "كلمة المرور غير صحيحة! ❌";
+    }
+  }
+
+  function loadAdminData() {
+    const people = getLocalPeople();
+    document.getElementById("totalCount").innerText = people.length;
+    renderAdminList();
+  }
+
+  function cleanPhoneNumber(rawPhone) {
+    if (!rawPhone) return "";
+    let cleaned = rawPhone.replace(/\D/g, '');
+    if (cleaned.startsWith('20') && cleaned.length === 13) {
+      cleaned = '0' + cleaned.substring(2);
+    } else if (cleaned.startsWith('002') && cleaned.length === 14) {
+      cleaned = '0' + cleaned.substring(3);
+    }
+    return cleaned;
+  }
+
+  window.addNewPersonFromAdmin = async function() {
+    const name = document.getElementById("newName").value.trim();
+    const nickname = document.getElementById("newNick").value.trim();
+    const job = document.getElementById("newJob").value.trim();
+    const phone = cleanPhoneNumber(document.getElementById("newPhone").value);
+    const msg = document.getElementById("addMsg");
+
+    if (!name || !job || !phone) {
+      msg.style.color = "#e74c3c";
+      msg.innerText = "الاسم، المهنة، ورقم الهاتف حقول إجبارية! ⚠️";
+      return;
+    }
+
+    if (phone.length !== 11) {
+      msg.style.color = "#e74c3c";
+      msg.innerText = `رقم الهاتف غير صحيح (${phone.length} أرقام). يجب أن يكون 11 رقماً بالضبط! ⚠️`;
+      return;
+    }
+
+    let people = getLocalPeople();
+    const phoneExists = people.some(p => p.phone === phone);
+
+    if (phoneExists) {
+      msg.style.color = "#e74c3c";
+      msg.innerText = "هذا الرقم مسجل بالفعل! ⚠️";
+      return;
+    }
+
+    const newEntry = { name, nickname, job, phone };
+    people.push(newEntry);
+    localStorage.setItem("villagePeople", JSON.stringify(people));
+
+    try {
+      await addDoc(collection(db, "contacts"), newEntry);
+    } catch(e) {}
+
+    loadAdminData();
+
+    document.getElementById("newName").value = "";
+    document.getElementById("newNick").value = "";
+    document.getElementById("newJob").value = "";
+    document.getElementById("newPhone").value = "";
+
+    msg.style.color = "#28a745";
+    msg.innerText = "تم إضافة الشخص وحفظه بنجاح! ✅";
+    setTimeout(() => { msg.innerText = ""; }, 3000);
+  }
+
+  window.renderAdminList = function() {
+    const people = getLocalPeople();
+    const query = document.getElementById("adminSearch").value.toLowerCase();
+    const container = document.getElementById("adminListContainer");
+    container.innerHTML = "";
+
+    const filtered = people.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      p.phone.includes(query) || 
+      p.job.toLowerCase().includes(query) ||
+      (p.nickname && p.nickname.toLowerCase().includes(query))
+    );
+
+    if (filtered.length === 0) {
+      container.innerHTML = "<p style='color: #e74c3c; margin-top: 10px; text-align: center; font-weight: bold;'>لا توجد نتائج مطابقة ⚠️</p>";
+      return;
+    }
+
+    filtered.forEach((p, index) => {
+      let displayName = p.name + (p.nickname ? ` (${p.nickname})` : "");
+      
+      container.innerHTML += `
+        <div class="person-item">
+          <input type="checkbox" class="row-checkbox" data-index="${index}">
+          <div style="flex: 1;">
+            <strong>الاسم:</strong> ${displayName}<br>
+            <strong>المهنة:</strong> ${p.job}<br>
+            <strong>الهاتف:</strong> ${p.phone}<br>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button type="button" class="warning-btn" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="editPerson(${index})">✏️ تعديل</button>
+              <button type="button" class="danger-btn" style="padding: 5px 10px; font-size: 12px; width: auto;" onclick="deletePerson(${index})">🗑️ حذف</button>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  window.toggleSelectAll = function() {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+  }
+
+  window.deleteSelected = function() {
+    const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+    if (checkboxes.length === 0) {
+      alert("الرجاء تحديد عنصر واحد على الأقل للحذف! ⚠️");
+      return;
+    }
+
+    if (confirm(`هل أنت متأكد من حذف ${checkboxes.length} شخصاً محددين نهائياً؟`)) {
+      let people = getLocalPeople();
+      const indicesToDelete = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-index'))).sort((a, b) => b - a);
+
+      indicesToDelete.forEach(index => {
+        people.splice(index, 1);
+      });
+
+      localStorage.setItem("villagePeople", JSON.stringify(people));
+      loadAdminData();
+      alert("تم حذف العناصر المحددة بنجاح! ✅");
+    }
+  }
+
+  window.deletePerson = function(index) {
+    if (confirm("هل أنت متأكد من حذف هذا الشخص نهائياً؟")) {
+      let people = getLocalPeople();
+      people.splice(index, 1);
+      localStorage.setItem("villagePeople", JSON.stringify(people));
+      loadAdminData();
+    }
+  }
+
+  window.editPerson = function(index) {
+    let people = getLocalPeople();
+    let p = people[index];
+
+    document.getElementById("editIndex").value = index;
+    document.getElementById("editName").value = p.name;
+    document.getElementById("editNick").value = p.nickname || "";
+    document.getElementById("editJob").value = p.job;
+    document.getElementById("editPhone").value = p.phone;
+
+    document.getElementById("editCard").style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.saveEditedPerson = function() {
+    let index = document.getElementById("editIndex").value;
+    let people = getLocalPeople();
+
+    let newName = document.getElementById("editName").value.trim();
+    let newNick = document.getElementById("editNick").value.trim();
+    let newJob = document.getElementById("editJob").value.trim();
+    let newPhone = cleanPhoneNumber(document.getElementById("editPhone").value);
+
+    if (!newName || !newPhone || !newJob) {
+      alert("الاسم، المهنة، ورقم الهاتف حقول إجبارية! ⚠️");
+      return;
+    }
+
+    if (newPhone.length !== 11) {
+      alert("رقم الهاتف يجب أن يكون 11 رقماً بالضبط! ⚠️");
+      return;
+    }
+
+    people[index] = {
+      name: newName,
+      nickname: newNick,
+      job: newJob,
+      phone: newPhone
+    };
+
+    localStorage.setItem("villagePeople", JSON.stringify(people));
+    loadAdminData();
+    document.getElementById("editCard").style.display = "none";
+    alert("تم تعديل البيانات بنجاح! ✅");
+  }
+
+  window.cancelEdit = function() {
+    document.getElementById("editCard").style.display = "none";
+  }
+
+  window.resetFactory = function() {
+    if (confirm("⚠️ تحذير: سيتم استعادة النسخة الافتراضية. هل أنت متأكد؟")) {
+      localStorage.setItem("villagePeople", JSON.stringify(defaultPeople));
+      loadAdminData();
+      alert("تمت العودة لإعدادات المصنع بنجاح! 🔄");
+    }
+  }
+
+  window.exportData = function() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(getLocalPeople()));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "village_people_backup.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  }
+
+  window.importContacts = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+
+    reader.onload = function(e) {
+      const content = e.target.result;
+      let newPeople = [];
+
+      if (file.name.endsWith('.json')) {
+        try {
+          newPeople = JSON.parse(content);
+        } catch (err) {
+          alert("ملف JSON غير صالح! ❌");
+          return;
+        }
+      } else if (file.name.endsWith('.vcf')) {
+        let lines = content.split('\n');
+        let currentName = "مواطن";
+        let currentPhone = "";
+
+        lines.forEach(line => {
+          line = line.trim();
+          if (line.startsWith('FN:')) {
+            currentName = line.replace('FN:', '').trim();
+          } else if (line.startsWith('TEL')) {
+            let parts = line.split(':');
+            currentPhone = cleanPhoneNumber(parts[parts.length - 1]);
+          }
+
+          if (currentPhone && currentPhone.length === 11) {
+            newPeople.push({
+              name: currentName || "مواطن",
+              nickname: "",
+              job: "مواطن",
+              phone: currentPhone
+            });
+            currentName = "مواطن";
+            currentPhone = "";
+          }
+        });
+      }
+
+      if (newPeople.length > 0) {
+        let existingPeople = getLocalPeople();
+        let addedCount = 0;
+
+        newPeople.forEach(newItem => {
+          let cleanedPhone = cleanPhoneNumber(newItem.phone);
+          let exists = existingPeople.some(p => p.phone === cleanedPhone);
+          if (!exists && cleanedPhone.length === 11) {
+            existingPeople.push({
+              name: newItem.name || "مواطن",
+              nickname: newItem.nickname || "",
+              job: newItem.job || "مواطن",
+              phone: cleanedPhone
+            });
+            addedCount++;
+          }
+        });
+
+        localStorage.setItem("villagePeople", JSON.stringify(existingPeople));
+        loadAdminData();
+        alert(`تم استيراد وإضافة ${addedCount} جهة اتصال جديدة بنجاح! ✅`);
+        document.getElementById("contactFile").value = "";
+      } else {
+        alert("لم يتم العثور على أرقام هواتف صالحة أو مطابقة في الملف. ⚠️");
+      }
+    };
+  }
+</script>
+
+</body>
+</html>
