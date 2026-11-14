@@ -160,7 +160,6 @@
 
   <a href="index.html" class="top-back-btn">⬅ العودة للرئيسية</a>
 
-  <!-- شاشة تسجيل الدخول -->
   <div id="loginSection" class="card">
     <h2>🔒 دخول المطور</h2>
     <p style="font-size: 14px; color: #666;">برجاء إدخال كلمة المرور للوصول إلى لوحة التحكم:</p>
@@ -169,11 +168,9 @@
     <p id="loginError" style="color: #e74c3c; margin-top: 10px; font-weight: bold; display: none;"></p>
   </div>
 
-  <!-- لوحة التحكم -->
   <div id="adminPanel" style="display: none;">
     <h2>⚙️ لوحة تحكم المطور <span style="font-size: 11px; color: #28a745;">(جاهز للإدارة 🚀)</span></h2>
 
-    <!-- نموذج تعديل بيانات شخص -->
     <div id="editCard" class="card" style="border: 2px solid #007BFF; background-color: #f1f8ff; display: none;">
       <h3>✏️ تعديل بيانات الشخص</h3>
       <input type="hidden" id="editIndex">
@@ -185,52 +182,48 @@
       <input type="text" id="editJob">
       <label>رقم الهاتف:</label>
       <input type="text" id="editPhone">
-      
+
       <button type="button" class="success-btn" onclick="saveEditedPerson()">حفظ التعديلات</button>
       <button type="button" class="danger-btn" onclick="cancelEdit()">إلغاء</button>
     </div>
 
-    <!-- قسم إضافة شخص جديد -->
     <div class="card" style="border: 2px solid #28a745; background-color: #f4fdf4;">
       <h3>➕ إضافة شخص أو رقم جديد</h3>
       <label>الاسم:</label>
       <input type="text" id="newName" placeholder="ادخل اسم الشخص أو صاحب المهنة">
-      
+
       <label>الكنية / الشهرة: <span style="font-size: 11px; color: #666;">(اختياري)</span></label>
       <input type="text" id="newNick" placeholder="مثال: أبو محمد، الشناوي...">
-      
+
       <label>المهنة أو الصفة:</label>
       <input type="text" id="newJob" placeholder="مثال: سباك، طبيب، مواطن...">
-      
+
       <label>رقم الهاتف:</label>
       <input type="text" id="newPhone" placeholder="010xxxxxxxx أو ألصق الرقم المنسوخ">
-      
+
       <button type="button" class="success-btn" onclick="addNewPersonFromAdmin()">إضافة وحفظ الرقم</button>
       <p id="addMsg" style="margin-top: 8px; font-weight: bold; text-align: center;"></p>
     </div>
 
-    <!-- إحصائيات الدليل (مختصرة لعدد المسجلين فقط) -->
     <div class="card stats-box">
       <h3>📊 إحصائيات الدليل</h3>
       <p style="font-size: 18px; margin-top: 10px;"><strong>إجمالي الأرقام المسجلة:</strong> <span id="totalCount" style="color: #007BFF; font-weight: bold;">0</span></p>
     </div>
 
-    <!-- إدارة البيانات والنسخ الاحتياطي ورفع ملف جهات الاتصال -->
     <div class="card">
       <h3>💾 إدارة البيانات والنسخ الاحتياطي</h3>
       <button type="button" onclick="exportData()">📥 تصدير البيانات (Backup)</button>
-      
+
       <label style="margin-top: 15px; font-weight: bold;">📱 استيراد ملف جهات الاتصال (VCF أو JSON):</label>
       <input type="file" id="contactFile" accept=".vcf, .json" onchange="importContacts(event)">
 
       <button type="button" class="danger-btn" style="margin-top: 20px;" onclick="resetFactory()">🔄 إعادة ضبط المصنع</button>
     </div>
 
-    <!-- البحث والتحكم في الأسماء وتحديد متعدد -->
     <div class="card">
       <h3>👥 إدارة الأفراد والأرقام</h3>
       <input type="text" id="adminSearch" placeholder="ابحث بالاسم أو الرقم أو المهنة للتحكم..." oninput="renderAdminList()">
-      
+
       <div class="batch-actions">
         <button type="button" class="warning-btn" style="margin-top: 10px; font-size: 13px; padding: 8px;" onclick="toggleSelectAll()">☑️ تحديد الكل</button>
         <button type="button" class="danger-btn" style="margin-top: 10px; font-size: 13px; padding: 8px;" onclick="deleteSelected()">🗑️ حذف المحدد</button>
@@ -264,7 +257,7 @@
     if (pass === correctPassword) {
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("adminPanel").style.display = "block";
-      
+
       try {
         const querySnapshot = await getDocs(collection(db, "contacts"));
         if (!querySnapshot.empty) {
@@ -275,7 +268,7 @@
           localStorage.setItem("villagePeople", JSON.stringify(cloudList));
         }
       } catch (e) {}
-      
+
       loadAdminData();
     } else {
       const err = document.getElementById("loginError");
@@ -355,9 +348,9 @@
     const container = document.getElementById("adminListContainer");
     container.innerHTML = "";
 
-    const filtered = people.filter(p => 
-      p.name.toLowerCase().includes(query) || 
-      p.phone.includes(query) || 
+    const filtered = people.filter(p =>
+      p.name.toLowerCase().includes(query) ||
+      p.phone.includes(query) ||
       p.job.toLowerCase().includes(query) ||
       (p.nickname && p.nickname.toLowerCase().includes(query))
     );
@@ -369,7 +362,7 @@
 
     filtered.forEach((p, index) => {
       let displayName = p.name + (p.nickname ? ` (${p.nickname})` : "");
-      
+
       container.innerHTML += `
         <div class="person-item">
           <input type="checkbox" class="row-checkbox" data-index="${index}">

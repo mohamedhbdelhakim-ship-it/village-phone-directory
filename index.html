@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>دليل هواتف أهل القرية</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      max-width: 420px;
+      margin: auto;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    #menuBtn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 22px;
+      background: #ffffff;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #007BFF;
+      transition: 0.2s;
+    }
+
+    #menuBtn:active {
+      transform: scale(0.95);
+    }
+
+    #menu {
+      position: absolute;
+      top: 65px;
+      right: 15px;
+      background: white;
+      border: none;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+      padding: 10px;
+      border-radius: 10px;
+      z-index: 100;
+      display: none;
+    }
+
+    #menu a {
+      display: block;
+      padding: 8px 12px;
+      text-decoration: none;
+      color: #444;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+
+    #menu a:hover {
+      background: #f0f4ff;
+      color: #007BFF;
+    }
+
+    .main-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(45deg, #007BFF, #00d2ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    #searchBox {
+      width: 100%;
+      padding: 12px 15px;
+      box-sizing: border-box;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      outline: none;
+      transition: 0.3s;
+    }
+
+    #searchBox:focus {
+      border-color: #007BFF;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.15);
+    }
+
+    #results {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    details {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 15px;
+      background: #fff;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      direction: rtl;
+      text-align: right;
+    }
+
+    summary {
+      font-weight: bold;
+      cursor: pointer;
+      color: #007BFF;
+      font-size: 16px;
+      outline: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    summary::after {
+      content: "▼";
+      font-size: 12px;
+      color: #007BFF;
+      transition: transform 0.3s;
+    }
+
+    details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    details a {
+      display: block;
+      padding: 10px 5px;
+      text-decoration: none;
+      color: #444;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    details a:last-child {
+      border-bottom: none;
+    }
+
+    details a:hover {
+      color: #007BFF;
+      padding-right: 5px;
+    }
+
+    .result-card {
+      background: #fff;
+      padding: 15px;
+      border: none;
+      margin-top: 12px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+      width: 100%;
+      box-sizing: border-box;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-name {
+      font-size: 17px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .result-job {
+      color: #7f8c8d;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .result-phone {
+      color: #007BFF;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .action-btns {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .call-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #007BFF, #0056b3);
+      color: white;
+      padding: 9px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+      transition: 0.2s;
+    }
+
+    .call-btn:active {
+      transform: scale(0.97);
+    }
+
+    .wa-btn {
+      flex: 1;
+      background: linear-gradient(135deg, #25d366, #1ebe5d);
+      color: white;
+      padding: 9px;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
+      transition: 0.2s;
+    }
+
+    .wa-btn:active {
+      transform: scale(0.97);
+    }
+
+    .add-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      transition: 0.2s;
+    }
+
+    .add-btn:active {
+      transform: scale(0.98);
+    }
+
+    .footer-actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .share-app-btn {
+      background: linear-gradient(135deg, #ff9966, #ff5e62);
+      color: white;
+      padding: 7px 14px;
+      border: none;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(255, 94, 98, 0.25);
+      transition: 0.2s;
+    }
+
+    .share-app-btn:active {
+      transform: scale(0.95);
+    }
+
+    .whatsapp-footer-btn {
+      background: linear-gradient(135deg, #25d366, #128C7E);
+      color: white;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 3px 10px rgba(37, 211, 102, 0.25);
+    }
+  </style>
+</head>
+<body>
+
+<button type="button" id="menuBtn">⋮</button>
+<div id="menu">
+  <a href="admin.html">⚙️ إعدادات المطور</a>
+</div>
+
+<div class="main-container">
+  <h1>دليل هواتف أهل القرية</h1>
+
+  <input type="text" id="searchBox" placeholder="ابحث بالاسم، الرقم، أو المهنة...">
+
+  <div id="results"></div>
+
+  <details>
+    <summary>📂 دليل أصحاب المهن</summary>
+    <a href="plumbers.html">🔧 السباكين</a>
+    <a href="electricians.html">⚡ الكهربائيين</a>
+    <a href="builders.html">🧱 البنائين والمحارين</a>
+    <a href="drivers.html">🚗 السواقين</a>
+    <a href="teachers.html">📚 المدرسين والأساتذة</a>
+    <a href="imams.html">🕌 أئمة المساجد والخطباء</a>
+    <a href="doctors.html">🩺 الأطباء</a>
+    <a href="pharmacies.html">💊 الصيدليات</a>
+    <a href="painters.html">🎨 النقاشين</a>
+    <a href="blacksmiths.html">⚒️ الحدادين</a>
+  </details>
+
+  <a href="add.html" style="text-decoration: none; width: 100%;">
+    <button type="button" class="add-btn">➕ أضف رقم جديد</button>
+  </a>
+
+  <div class="footer-actions">
+    <button type="button" class="share-app-btn" onclick="shareApp()">📤 مشاركة التطبيق</button>
+    <a href="https://wa.me/201037212065?text=السلام%20عليكم،%20لدي%20مشكلة%20أو%20استفسار%20بخصوص%20دليل%20القرية:" target="_blank" class="whatsapp-footer-btn">
+      💬 راسل المطور
+    </a>
+  </div>
+</div>
+
+<script type="module">
+  import { db, collection, getDocs } from "./firebase.js";
+
+  let cachedPeople = [];
+
+  async function loadContactsFromCloud() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "contacts"));
+      cachedPeople = [];
+      querySnapshot.forEach((doc) => {
+        cachedPeople.push(doc.data());
+      });
+    } catch (e) {
+      console.error("خطأ في جلب البيانات من السحابة: ", e);
+    }
+  }
+
+  loadContactsFromCloud();
+
+  function shareApp() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'دليل هواتف أهل القرية',
+        text: 'تطبيق دليل هواتف أهل القرية - ابحث عن أي رقم أو مهني بكل سهولة عبر الرابط التالي:\n\n',
+        url: window.location.href
+      }).catch((error) => {
+        console.log('تم إلغاء المشاركة');
+      });
+    } else {
+      alert("عذراً، متصفحك لا يدعم خاصية المشاركة المباشرة.");
+    }
+  }
+  window.shareApp = shareApp;
+
+  const searchBox = document.getElementById("searchBox");
+  const resultsDiv = document.getElementById("results");
+  const menuBtn = document.getElementById("menuBtn");
+  const menu = document.getElementById("menu");
+
+  function normalizeText(text) {
+    if (!text) return "";
+    return text
+      .toLowerCase()
+      .replace(/[أإآا]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/ى/g, "ي");
+  }
+
+  function performSearch() {
+    const rawText = searchBox.value.trim();
+    resultsDiv.innerHTML = "";
+
+    if (rawText === "") {
+      return;
+    }
+
+    const text = normalizeText(rawText);
+
+    const found = cachedPeople.filter(p => {
+      const matchName = normalizeText(p.name).includes(text);
+      const matchNickname = p.nickname && normalizeText(p.nickname).includes(text);
+      const matchPhone = p.phone.includes(text);
+      const matchJob = normalizeText(p.job).includes(text);
+
+      return matchName || matchNickname || matchPhone || matchJob;
+    });
+
+    if (found.length === 0) {
+      resultsDiv.innerHTML = "<p style='color: #e74c3c; margin-top: 15px; text-align: center; font-weight: bold;'>لم يتم الإضافة بعد ⚠️</p>";
+      return;
+    }
+
+    found.forEach(p => {
+      let displayName = p.name;
+      if (p.nickname && p.nickname.trim() !== "") {
+        displayName += ` (${p.nickname})`;
+      }
+
+      let cleanPhone = p.phone.startsWith('0') ? '2' + p.phone : p.phone;
+
+      resultsDiv.innerHTML += `
+        <div class="result-card">
+          <div class="result-name">${displayName}</div>
+          <div class="result-job">المهنة: ${p.job}</div>
+          <div class="result-phone">الرقم: ${p.phone}</div>
+          <div class="action-btns">
+            <a href="tel:${p.phone}" class="call-btn">📞 اتصال</a>
+            <a href="https://wa.me/${cleanPhone}" target="_blank" class="wa-btn">💬 واتساب</a>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  searchBox.addEventListener("input", performSearch);
+
+  menuBtn.addEventListener("click", function(e) {
+    e.stopPropagation();
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  });
+
+  window.addEventListener("click", function() {
+    menu.style.display = "none";
+  });
+</script>
+
+</body>
+</html>

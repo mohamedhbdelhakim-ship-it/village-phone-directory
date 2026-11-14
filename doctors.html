@@ -151,11 +151,11 @@
 
   async function loadDoctorsFromCloud() {
     const container = document.getElementById("list");
-    
+
     try {
       const querySnapshot = await getDocs(collection(db, "contacts"));
       let allPeople = [];
-      
+
       querySnapshot.forEach((doc) => {
         allPeople.push(doc.data());
       });

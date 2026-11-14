@@ -1,16 +1,15 @@
 // استيراد فايربيس وقاعدة البيانات Firestore
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-import { 
-  getFirestore, 
-  collection, 
-  getDocs, 
-  addDoc, 
-  deleteDoc, 
-  doc, 
-  onSnapshot 
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
 
-// إعدادات مشروعك السحابي
 const firebaseConfig = {
   apiKey: "AIzaSyCGz56U4iKqop8ddjFdSr7oU76YmBKdUDI",
   authDomain: "village-phone-directory-37b80.firebaseapp.com",
@@ -21,9 +20,7 @@ const firebaseConfig = {
   measurementId: "G-M76CJPE6TJ"
 };
 
-// تهيئة فايربيس وقاعدة البيانات
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// تصدير قاعدة البيانات ونطاق البيانات عشان نستخدمهم في باقي الصفحات
 export { db, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot };
